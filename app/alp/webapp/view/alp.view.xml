@@ -1,0 +1,41 @@
+<mvc:View
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+		xmlns:smartchart="sap.ui.comp.smartchart"
+		xmlns:sl="sap.ui.comp.navpopover"
+	xmlns:smartTable="sap.ui.comp.smarttable"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	controllerName="alp.controller.alp"
+	height="100%">
+
+	
+		<VBox fitContainer="true">
+			<smartTable:SmartTable id="LineItemsSmartTable" entitySet="ProductOrder"  tableType="Table"  beforeExport="onBeforeExport" useVariantManagement="true" useTablePersonalisation="true" header="Product" showRowCount="true" enableAutoBinding="true" class="sapUiResponsiveContentPadding" enableAutoColumnWidth="true" editTogglable="true" app:useSmartToggle="true">
+				<smartTable:layoutData>
+					<FlexItemData growFactor="1" baseSize="0%"/>
+				</smartTable:layoutData>
+			</smartTable:SmartTable>
+			<smartchart:SmartChart id ="smartChartGeneral" enableAutoBinding="true"
+			entitySet="ProductOrder" useVariantManagement="true"
+			 useChartPersonalisation="true"
+			header="" showFullScreenButton="true" 
+			showChartTooltip="true" showDrillBreadcrumbs="false"
+			showDetailsButton="false" showDrillButtons="true"
+			showSemanticNavigationButton="true"
+			height="100%"
+			>
+			<!-- <smartchart:toolbar>
+				<OverflowToolbar>
+					<ToolbarSpacer/>
+					<OverflowToolbarButton icon="sap-icon://activate" tooltip="Sort by name in ascending order via UI state" press="applyUIState" type="Transparent"/>
+				</OverflowToolbar>
+			</smartchart:toolbar>
+			<smartchart:semanticObjectController>
+				<sl:SemanticObjectController
+					 navigate="onNavigate" />
+			</smartchart:semanticObjectController> -->
+		</smartchart:SmartChart>
+		</VBox>
+</mvc:View>

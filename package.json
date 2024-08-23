@@ -1,0 +1,39 @@
+{
+  "name": "ALP",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^7",
+    "@sap/cds-odata-v2-adapter-proxy": "^1.9.21",
+    "express": "^4"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-alp": "cds watch --open alp/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy ALP --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "cds": {
+    "hana": {
+      "deploy-format": "hdbtable"
+    },
+    "build": {
+      "tasks": [
+        {
+          "for": "hana",
+          "dest": "../db"
+        },
+        {
+          "for": "node-cf"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@sap/cds-dk": "^7"
+  }
+}
