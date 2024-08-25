@@ -5,15 +5,18 @@ annotate service.ProductOrder with@(
     LineItem       : [
       {
         $Type: 'UI.DataField',
-        Value: productName,
+        Value: productName
       },
       {$Type: 'UI.DataField',Value: price},
-      {$Type: 'UI.DataField',Value: orderDate}
+      {$Type: 'UI.DataField',Value: orderDate},
+      {$Type: 'UI.DataField',Value: quantity},
+      {$Type: 'UI.DataField',Value:totalAmount}
     ],
     SelectionFields  : [
         productName,
         orderDate
     ],
+    
     DataPoint #dataPointForChart: {
                                 Value: price},
     Chart            : {
@@ -39,3 +42,25 @@ annotate service.ProductOrder with@(
       }
   }
 );
+
+annotate my.company.ProductOrder {
+
+   productName @Common.ValueList: {
+    CollectionPath : 'ProductOrder',
+    Label : '',
+    Parameters : [
+    {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: productName, ValueListProperty: 'productName'}
+    ]
+  };
+}
+
+annotate my.company.ProductOrder {
+
+   orderDate @Common.ValueList: {
+    CollectionPath : 'ProductOrder',
+    Label : '',
+    Parameters : [
+    {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: orderDate, ValueListProperty: 'orderDate'}
+    ]
+  };
+}

@@ -3,11 +3,9 @@ aspect cuid {
   key ID : UUID;
 }
 entity ProductOrder :cuid{      
-    productName: String @sap.aggregation.role:'dimension' @sap.label:'Product'
-					@sap.sortable:'true' @sap.filterable:'true';  
+    productName: String @sap.aggregation.role:'dimension';  
     quantity: Integer;    
-    price: Integer@sap.aggregation.role:'measure'@sap.label:'Price'
-					@sap.sortable:'true' @sap.filterable:'true';
+    price: Integer@sap.aggregation.role:'measure';
     orderDate: Date;      
     totalAmount: Decimal(10, 2);
 }
