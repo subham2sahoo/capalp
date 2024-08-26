@@ -1,54 +1,95 @@
 <mvc:View
-	xmlns="sap.m"
-	xmlns:mvc="sap.ui.core.mvc"
-	xmlns:core="sap.ui.core"
-	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
-		xmlns:smartchart="sap.ui.comp.smartchart"
-		xmlns:sl="sap.ui.comp.navpopover"
-		xmlns:sfb="sap.ui.comp.smartfilterbar"
-	xmlns:smartTable="sap.ui.comp.smarttable"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
-	controllerName="alp.controller.alp"
-	height="100%">
-
-	
-		<VBox fitContainer="true">
-		<sfb:SmartFilterBar
-					id="smartFilterBar"
-					entitySet="ProductOrder">
-					<sfb:customData>
-						<core:CustomData
-							key="defaultFilterBarExpanded"
-							value='{"productName": "true"}'/>
-						<core:CustomData
-							key="defaultShowAllFilters"
-							value='{"productName": "true"}'/>
-					</sfb:customData>
-					<sfb:controlConfiguration>
-						<sfb:ControlConfiguration
-							key="productName"
-							visibleInAdvancedArea="true" />
-						<sfb:ControlConfiguration
-							key="orderDate"
-							visibleInAdvancedArea="true" />
-					</sfb:controlConfiguration>
-				</sfb:SmartFilterBar>
-			
-			<smartchart:SmartChart id ="smartChartGeneral" enableAutoBinding="true" 
-			entitySet="ProductOrder" useVariantManagement="true"
-			 useChartPersonalisation="true"
-			header="" showFullScreenButton="true" 
-			showChartTooltip="true" showDrillBreadcrumbs="false"
-			showDetailsButton="false" showDrillButtons="true"
-			showSemanticNavigationButton="true"
-			height="100%"
-			>
-		</smartchart:SmartChart>
-		<smartTable:SmartTable id="LineItemsSmartTable" entitySet="ProductOrder" smartFilterId="smartFilterBar" showFullScreenButton="true" tableType="Table"  beforeExport="onBeforeExport" useVariantManagement="true" useTablePersonalisation="true" header="Product" showRowCount="true" enableAutoBinding="true" class="sapUiResponsiveContentPadding" enableAutoColumnWidth="true" editTogglable="true" app:useSmartToggle="true">
-				<smartTable:layoutData>
-					<FlexItemData growFactor="1" baseSize="0%"/>
-				</smartTable:layoutData>
-			</smartTable:SmartTable>
-		</VBox>
+    xmlns:table="sap.ui.table"
+    xmlns:chart="sap.chart"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+    xmlns:smartchart="sap.ui.comp.smartchart"
+    xmlns:sl="sap.ui.comp.navpopover"
+    xmlns:sfb="sap.ui.comp.smartfilterbar"
+    xmlns:smartTable="sap.ui.comp.smarttable"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    controllerName="alp.controller.alp"
+    height="100%"
+>
+    <VBox fitContainer="true">
+        <sfb:SmartFilterBar
+            id="smartFilterBar"
+            entitySet="ProductOrder"
+            showClearOnFB="true"
+            liveMode="true"
+            clear="onClear"
+        >
+            <sfb:controlConfiguration>
+                <sfb:ControlConfiguration
+                    key="productName"
+                    visibleInAdvancedArea="true"
+                    label="Product Name"
+                />
+                <sfb:ControlConfiguration
+                    key="orderDate"
+                    visibleInAdvancedArea="true"
+                    label="Order Date"
+                    change="onChangeDate"
+                    controlType="date"
+                >
+                    <sfb:customControl>
+                        <DateRangeSelection
+                            id="idSelectDate"
+                            change="onSelectDate"
+                        />
+                    </sfb:customControl>
+                </sfb:ControlConfiguration>
+            </sfb:controlConfiguration>
+        </sfb:SmartFilterBar>
+        <!-- <DateRangeSelection id="idOrderDate" change="onChangeDate" ></DateRangeSelection> -->
+        <smartchart:SmartChart
+            id="smartChartGeneral"
+            enableAutoBinding="true"
+            entitySet="ProductOrder"
+            useVariantManagement="true"
+            useChartPersonalisation="true"
+            header=""
+            showFullScreenButton="true"
+            showChartTooltip="true"
+            showDetailsButton="false"
+            showSemanticNavigationButton="false"
+            smartFilterId="smartFilterBar"
+            height="100%"
+        >
+            <chart:Chart
+                id="idChart"
+                selectData="handleChartSelection"
+                deselectData="handleChartdeSelection"
+                width="100%"
+                height="350px"
+            />
+        </smartchart:SmartChart>
+        <smartTable:SmartTable
+            id="LineItemsSmartTable"
+            entitySet="ProductOrder"
+            smartFilterId="smartFilterBar"
+            showFullScreenButton="true"
+            tableType="Table"
+            beforeExport="onBeforeExport"
+            useVariantManagement="true"
+            useTablePersonalisation="true"
+            header="Product"
+            showRowCount="true"
+            enableAutoBinding="true"
+            class="sapUiResponsiveContentPadding"
+            enableAutoColumnWidth="true"
+            editTogglable="true"
+        >
+            <smartTable:layoutData>
+                <FlexItemData
+                    growFactor="1"
+                    baseSize="0%"
+                />
+            </smartTable:layoutData>
+            <!-- <table:Table cellClick="click"></table:Table> -->
+        </smartTable:SmartTable>
+    </VBox>
 </mvc:View>

@@ -3,7 +3,7 @@
     xmlns="sap.m" xmlns:smartTable="sap.ui.comp.smarttable" xmlns:sfb="sap.ui.comp.smartfilterbar" xmlns:core="sap.ui.core">
     <Page id="page" title="{i18n>title}">
        <content>
-	  	<sfb:SmartFilterBar
+	  	<!-- <sfb:SmartFilterBar
 					id="smartFilterBar"
 					entitySet="Employees"
 					>
@@ -15,6 +15,29 @@
 							key="Name"
 							visibleInAdvancedArea="true" />
 					</sfb:controlConfiguration>
+				</sfb:SmartFilterBar> -->
+				<sfb:SmartFilterBar
+					id="smartFilterBar"
+					entitySet="Employees">
+					<!-- <sfb:customData>
+						<core:CustomData
+							key="defaultFilterBarExpanded"
+							value='{"EmployeeID": "true"}'/>
+						<core:CustomData
+							key="defaultShowAllFilters"
+							value='{"EmployeeID": "true"}'/>
+					</sfb:customData> -->
+					<sfb:controlConfiguration>
+						<sfb:ControlConfiguration
+							key="EmployeeID"
+							visibleInAdvancedArea="true" />
+						<sfb:ControlConfiguration
+							key="Name"
+							visibleInAdvancedArea="true" />
+					</sfb:controlConfiguration>
+					<sfb:layoutData>
+                            <FlexItemData id="_IDGenFlexItemData2" shrinkFactor="0" />
+                        </sfb:layoutData>
 				</sfb:SmartFilterBar>
        <smartTable:SmartTable id="smartTreeTable"  
 			entitySet="Employees" tableType="TreeTable"   useVariantManagement="false" useTablePersonalisation="true" 
