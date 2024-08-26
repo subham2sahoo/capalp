@@ -15,7 +15,8 @@
     "watch-alp": "cds watch --open alp/webapp/index.html?sap-ui-xx-viewCache=false",
     "undeploy": "cf undeploy ALP --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
-    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "watch-treetable": "cds watch --open treetable/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "hana": {
@@ -34,6 +35,8 @@
     }
   },
   "devDependencies": {
-    "@sap/cds-dk": "^7"
+    "@sap/cds-dk": "^7",
+    "@sap/ux-specification": "^1.120.17",
+    "rimraf": "^5.0.5"
   }
 }

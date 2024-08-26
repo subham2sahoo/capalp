@@ -1,8 +1,9 @@
-using my.company.ProductOrder as Product from '../db/model';
+using my.company as my from '../db/model';
 
 
 service companyServ {
 
-    entity ProductOrder as projection  on Product;
+    entity ProductOrder as projection  on my.ProductOrder;
+    entity Employees as projection  on my.Employees;
 
 }

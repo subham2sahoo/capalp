@@ -39,9 +39,23 @@ modules:
       - alp.zip
       name: alp
       target-path: resources/
+    - artifacts:
+      - treetable.zip
+      name: treetable
+      target-path: resources/
 - name: alp
   type: html5
   path: app/alp
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: treetable
+  type: html5
+  path: app/treetable
   build-parameters:
     build-result: dist
     builder: custom
