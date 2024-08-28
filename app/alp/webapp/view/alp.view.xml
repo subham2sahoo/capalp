@@ -1,4 +1,4 @@
-<mvc:View
+<mvc:View xmlns:controls="sap.viz.ui5.controls" xmlns:data2="sap.chart.data" xmlns:data="sap.viz.ui5.data"
     xmlns:table="sap.ui.table"
     xmlns:chart="sap.chart"
     xmlns="sap.m"
@@ -12,6 +12,10 @@
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
     controllerName="alp.controller.alp"
+
+    xmlns:viz="sap.viz.ui5.controls"
+   xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
     height="100%"
 >
     <VBox fitContainer="true">
@@ -47,16 +51,9 @@
         <!-- <DateRangeSelection id="idOrderDate" change="onChangeDate" ></DateRangeSelection> -->
         <smartchart:SmartChart
             id="smartChartGeneral"
-            enableAutoBinding="true"
             entitySet="ProductOrder"
-            useVariantManagement="true"
-            useChartPersonalisation="true"
-            header=""
-            showFullScreenButton="true"
-            showChartTooltip="true"
-            showDetailsButton="false"
-            showSemanticNavigationButton="false"
             smartFilterId="smartFilterBar"
+            beforeRebindChart="beforeRebindChart"
             height="100%"
         >
             <chart:Chart
@@ -65,14 +62,15 @@
                 deselectData="handleChartdeSelection"
                 width="100%"
                 height="350px"
-            />
+            >
+            </chart:Chart>
         </smartchart:SmartChart>
         <smartTable:SmartTable
             id="LineItemsSmartTable"
             entitySet="ProductOrder"
             smartFilterId="smartFilterBar"
             showFullScreenButton="true"
-            tableType="Table"
+            tableType="AnalyticalTable"
             beforeExport="onBeforeExport"
             useVariantManagement="true"
             useTablePersonalisation="true"
@@ -89,7 +87,6 @@
                     baseSize="0%"
                 />
             </smartTable:layoutData>
-            <!-- <table:Table cellClick="click"></table:Table> -->
         </smartTable:SmartTable>
     </VBox>
 </mvc:View>
