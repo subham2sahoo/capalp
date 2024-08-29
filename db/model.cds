@@ -7,6 +7,7 @@ aspect cuid {
 entity ProductOrder : cuid {
   productName : String;
   quantity    : Integer;
+  @Common.IsCurrency
   price       : Integer;
   orderDate   : Date;
   totalAmount : Decimal(10, 2);

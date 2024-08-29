@@ -69,22 +69,35 @@ annotate service.ProductOrder with @(UI: {
   }
 });
 
-annotate my.company.ProductOrder {
+// annotate my.company.ProductOrder {
 
-  productName @Common.ValueList: {
-    CollectionPath: 'ProductOrder',
-    Label         : 'Product Name',
-    Parameters    : [{
-      $Type            : 'Common.ValueListParameterInOut',
-      LocalDataProperty: productName,
-      ValueListProperty: 'productName'
-    }]
-  };
-}
+//   productName @Common.ValueList: {
+//     CollectionPath: 'ProductOrder',
+//     Label         : 'Product Name',
+//     Parameters    : [{
+//       $Type            : 'Common.ValueListParameterInOut',
+//       LocalDataProperty: productName,
+//       ValueListProperty: 'productName'
+//     }]
+//   };
+// }
 
-annotate my.company.ProductOrder {
+// annotate my.company.ProductOrder {
 
-  orderDate @Common.ValueList: {
+//   orderDate @Common.ValueList: {
+//     CollectionPath: 'ProductOrder',
+//     Label         : 'Order Date',
+//     Parameters    : [{
+//       $Type            : 'Common.ValueListParameterInOut',
+//       LocalDataProperty: orderDate,
+//       ValueListProperty: 'orderDate'
+//     }]
+//   };
+// }
+
+annotate service.ProductOrder {
+  orderDate    @sap.aggregation.role: 'dimension'  @Common.ValueList: {
+    $Type         : 'Common.ValueListType',
     CollectionPath: 'ProductOrder',
     Label         : 'Order Date',
     Parameters    : [{
@@ -93,14 +106,18 @@ annotate my.company.ProductOrder {
       ValueListProperty: 'orderDate'
     }]
   };
-}
-
-annotate service.ProductOrder {
-  orderDate   @sap.aggregation.role: 'dimension';
-  price       @sap.aggregation.role: 'measure';
-  productName @sap.aggregation.role: 'dimension';
-  quantity    @sap.aggregation.role: 'measure';
-  totalAmount @sap.aggregation.role: 'measure';
+  price        @sap.aggregation.role: 'measure';
+  productName  @sap.aggregation.role: 'dimension'  @Common.ValueList: {
+    CollectionPath: 'ProductOrder',
+    Label         : 'Product Name',
+    Parameters    : [{
+      $Type            : 'Common.ValueListParameterInOut',
+      LocalDataProperty: productName,
+      ValueListProperty: 'productName'
+    }]
+  };
+  quantity     @sap.aggregation.role: 'measure';
+  totalAmount  @sap.aggregation.role: 'measure';
 
 };
 
