@@ -1,4 +1,4 @@
-using companyServ as service from '../../srv/model';
+using companyServ as service from '../../srv/model_srv';
 annotate service.Employees with @(
   UI                                             : {
     SelectionFields: [

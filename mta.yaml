@@ -43,6 +43,10 @@ modules:
       - treetable.zip
       name: treetable
       target-path: resources/
+    - artifacts:
+      - varm.zip
+      name: varm
+      target-path: resources/
 - name: alp
   type: html5
   path: app/alp
@@ -56,6 +60,16 @@ modules:
 - name: treetable
   type: html5
   path: app/treetable
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: varm
+  type: html5
+  path: app/varm
   build-parameters:
     build-result: dist
     builder: custom

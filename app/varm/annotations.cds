@@ -1,0 +1,1 @@
+using companyServ as service from '../../srv/model_srv';

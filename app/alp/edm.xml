@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices m:DataServiceVersion="2.0">
+    <Schema Namespace="companyServ" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+      <EntityContainer Name="EntityContainer" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="ProductOrder" EntityType="companyServ.ProductOrder"/>
+        <EntitySet Name="Employees" EntityType="companyServ.Employees"/>
+        <AssociationSet Name="Employees_ManagerID" Association="companyServ.Employees_ManagerID">
+          <End Role="Employees" EntitySet="Employees"/>
+          <End Role="Employees1" EntitySet="Employees"/>
+        </AssociationSet>
+      </EntityContainer>
+      <EntityType Name="ProductOrder">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="productName" Type="Edm.String" sap:aggregation-role="dimension"/>
+        <Property Name="quantity" Type="Edm.Int32" sap:aggregation-role="measure"/>
+        <Property Name="price" Type="Edm.Int32" sap:aggregation-role="measure"/>
+        <Property Name="orderDate" Type="Edm.DateTime" sap:aggregation-role="dimension" sap:display-format="Date"/>
+        <Property Name="totalAmount" Type="Edm.Decimal" Precision="10" Scale="2" sap:aggregation-role="measure"/>
+      </EntityType>
+      <EntityType Name="Employees">
+        <Key>
+          <PropertyRef Name="EmployeeID"/>
+        </Key>
+        <Property Name="EmployeeID" Type="Edm.String" MaxLength="10" Nullable="false" sap:hierarchy-node-for="EmployeeID"/>
+        <NavigationProperty Name="ManagerID" Relationship="companyServ.Employees_ManagerID" FromRole="Employees" ToRole="Employees1" sap:hierarchy-parent-node-for="EmployeeID"/>
+        <Property Name="ManagerID_EmployeeID" Type="Edm.String" MaxLength="10" sap:hierarchy-parent-node-for="EmployeeID"/>
+        <Property Name="Name" Type="Edm.String" MaxLength="100"/>
+        <Property Name="Position" Type="Edm.String" MaxLength="50"/>
+        <Property Name="Department" Type="Edm.String" MaxLength="50"/>
+        <Property Name="LEVEL" Type="Edm.Int32" sap:hierarchy-level-for="EmployeeID"/>
+        <Property Name="DrillState" Type="Edm.String" MaxLength="10" sap:hierarchy-drill-state-for="EmployeeID"/>
+        <NavigationProperty Name="children" Relationship="companyServ.Employees_ManagerID" FromRole="Employees1" ToRole="Employees"/>
+      </EntityType>
+      <Association Name="Employees_ManagerID">
+        <End Role="Employees" Type="companyServ.Employees" Multiplicity="*"/>
+        <End Role="Employees1" Type="companyServ.Employees" Multiplicity="0..1">
+          <OnDelete Action="Cascade"/>
+        </End>
+        <ReferentialConstraint>
+          <Principal Role="Employees1">
+            <PropertyRef Name="EmployeeID"/>
+          </Principal>
+          <Dependent Role="Employees">
+            <PropertyRef Name="ManagerID_EmployeeID"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Annotations Target="companyServ.ProductOrder" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="productName"/>
+              <PropertyValue Property="Label" String="Product Name"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="price"/>
+              <PropertyValue Property="Label" String="Price"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="orderDate"/>
+              <PropertyValue Property="Label" String="Order Date"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="quantity"/>
+              <PropertyValue Property="Label" String="Quantity"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="totalAmount"/>
+              <PropertyValue Property="Label" String="Total Amount"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>productName</PropertyPath>
+            <PropertyPath>orderDate</PropertyPath>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="price">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="price"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="Title" String="Product Price"/>
+            <PropertyValue Property="Description" String="Price"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>price</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="price"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                  <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#price"/>
+                  <Annotation Term="Common.Label" String="Price"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>productName</PropertyPath>
+                <PropertyPath>orderDate</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="productName"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="orderDate"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category2"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="companyServ.ProductOrder/ID" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="companyServ.ProductOrder/productName" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="CollectionPath" String="ProductOrder"/>
+            <PropertyValue Property="Label" String="Product Name"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="productName"/>
+                  <PropertyValue Property="ValueListProperty" String="productName"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="companyServ.ProductOrder/price" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Common.IsCurrency" Bool="true"/>
+      </Annotations>
+      <Annotations Target="companyServ.ProductOrder/orderDate" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="CollectionPath" String="ProductOrder"/>
+            <PropertyValue Property="Label" String="Order Date"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="orderDate"/>
+                  <PropertyValue Property="ValueListProperty" String="orderDate"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

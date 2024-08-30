@@ -6,9 +6,10 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@sap/cds": "^8",
+    "@sap/cds": "6.8.4",
     "@sap/cds-odata-v2-adapter-proxy": "^1.9.21",
-    "express": "^4"
+    "express": "^4",
+    "sqlite3": "^5.1.7"
   },
   "scripts": {
     "start": "cds-serve",
@@ -16,7 +17,8 @@
     "undeploy": "cf undeploy ALP --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
-    "watch-treetable": "cds watch --open treetable/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-treetable": "cds watch --open treetable/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-varm": "cds watch --open varm/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "hana": {
@@ -35,7 +37,6 @@
     }
   },
   "devDependencies": {
-    "@sap/cds-dk": "^7",
     "@sap/ux-specification": "^1.120.17",
     "rimraf": "^5.0.5"
   }

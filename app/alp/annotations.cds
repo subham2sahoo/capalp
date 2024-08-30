@@ -1,4 +1,4 @@
-using companyServ as service from '../../srv/model';
+using companyServ as service from '../../srv/model_srv';
 
 annotate service.ProductOrder with @(UI: {
   LineItem        : [
@@ -106,7 +106,7 @@ annotate service.ProductOrder {
       ValueListProperty: 'orderDate'
     }]
   };
-  price        @sap.aggregation.role: 'measure';
+  price        @sap.aggregation.role: 'measure'  @Common.IsCurrency;
   productName  @sap.aggregation.role: 'dimension'  @Common.ValueList: {
     CollectionPath: 'ProductOrder',
     Label         : 'Product Name',

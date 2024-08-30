@@ -1,7 +1,7 @@
 {
   "_version": "1.59.0",
   "sap.app": {
-    "id": "treetable",
+    "id": "varm",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -13,11 +13,11 @@
     "sourceTemplate": {
       "id": "@sap/generator-fiori:basic",
       "version": "1.14.4",
-      "toolsId": "ef3df894-2058-4b6f-b4fe-03ae1c329fed"
+      "toolsId": "506dd89d-653b-4e45-80a4-17dd94a50012"
     },
     "dataSources": {
       "mainService": {
-        "uri": "/v2/company-serv/",
+        "uri": "/v2/company-serv",
         "type": "OData",
         "settings": {
           "annotations": [],
@@ -65,10 +65,10 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "treetable.i18n.i18n"
+          "bundleName": "varm.i18n.i18n"
         }
       },
-      "": {
+      "oModel": {
         "dataSource": "mainService",
         "preload": true,
         "settings": {
@@ -90,7 +90,7 @@
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
         "async": true,
-        "viewPath": "treetable.view",
+        "viewPath": "varm.view",
         "controlAggregation": "pages",
         "controlId": "app",
         "clearControlAggregation": false
@@ -115,7 +115,7 @@
       }
     },
     "rootView": {
-      "viewName": "treetable.view.App",
+      "viewName": "varm.view.App",
       "type": "XML",
       "async": true,
       "id": "App"
