@@ -71,7 +71,7 @@ sap.ui.define([
                 that.filterData = that.makeFiterData(item);
                 // // var sMessage = "Selected Key: " + params.key;
                 // const filters = that.varianStore.find(o => o.key === params.key).filter;
-                that.oFilterBar.getAllFilterItems().forEach((oFilterItem, index) => {
+                that.oFilterBar.getAllFilterItems().forEach((oFilterItem) => {
                     oFilterItem.getControl().setSelectedKeys();
                     oFilterItem.getControl().setSelectedKeys(that.filterData[oFilterItem.getControl().getName()]);
                 });
@@ -101,7 +101,21 @@ sap.ui.define([
             onManage: function (event) {
                 var params = event.getParameters();
                 this._updateItems(params);
+                if(params.deleted)
                 that.deleteVariant(params.deleted);
+            if(params.def){
+                that.oModel.callFunction("/saveVariant", {
+                    method: "GET",
+                    urlParameters: { items: JSON.stringify(params.def), flag: "updateDefault" },
+                    success: function (oRes) {
+                        console.log(oRes)
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                })
+
+            }
             },
             _updateItems: function (mParams) {
                 if (mParams.deleted) {
@@ -176,12 +190,12 @@ sap.ui.define([
                         variant.push({ sKey: item.sKey, Name: item.Name, default: item.default, FieldName: i.fieldName, Value: o })
                     })
                 });
-                that.variantData.push(variant);
+                that.variantData.push(...variant);
                 that.oModel.callFunction("/saveVariant", {
                     method: "GET",
                     urlParameters: { items: JSON.stringify(variant), flag: "create" },
                     success: function (oRes) {
-                        console.log(oRes)
+                        console.log(oRes);
                     },
                     error: function (error) {
                         console.log(error)
@@ -207,6 +221,9 @@ sap.ui.define([
                     res[field] = [...new Set(item.filter(i => i.FieldName === field).map(o => o.Value))]
                 })
                 return res;
+            },
+            onFilterChange:function(oEvent){
+                debugger
             }
         });
     });

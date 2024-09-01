@@ -7,7 +7,7 @@
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
-					<VariantManagement id="vm" select="onSelect" save="onSave" manage="onManage" >
+					<VariantManagement id="vm" select="onSelect" supportApplyAutomatically="false"  supportFavorites="false" save="onSave" manage="onManage" >
 						<items>
 						</items>
 					</VariantManagement>
@@ -16,7 +16,7 @@
 		</f:title>
 		<f:header>
 			<f:DynamicPageHeader>
-				<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
+				<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch"  filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
 					<fb:filterGroupItems>
 						<fb:FilterGroupItem name="Name" label="Name" groupName="Group1" visibleInFilterBar="true">
 							<fb:control>
