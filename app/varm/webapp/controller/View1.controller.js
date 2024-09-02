@@ -1,9 +1,11 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/VariantItem",
-    'sap/m/library'
+    'sap/m/library',
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
 ],
-    function (Controller, VariantItem, mLibrary) {
+    function (Controller, VariantItem, mLibrary, Filter, FilterOperator) {
         "use strict";
 
         let that;
@@ -13,6 +15,7 @@ sap.ui.define([
                 that = this;
                 that.oFilterBar = that.byId("filterbar");
                 that._oVM = that.byId("vm");
+                that._oVM.setModified(false);
                 that.varianStore = [];
                 that.oModel = that.getOwnerComponent().getModel("oModel");
                 that.oModel.read("/ProductOrder", {
@@ -30,32 +33,27 @@ sap.ui.define([
                 })
                 that.fetchVariant();
             },
-            fetchVariant: function () {
-                that.oModel.read("/VariantManagement", {
-                    success: function (oRes) {
-                        that.variantData = oRes.results;
-                        const uniqueKeys = new Set();
-                        const filteredArray = oRes.results.filter(item => {
-                            if (!uniqueKeys.has(item.sKey)) {
-                                uniqueKeys.add(item.sKey);
-                                return true;
-                            }
-                            return false;
-                        });
-                        filteredArray.forEach(obj => {
-                            const oItem = new VariantItem({
-                                key: obj.sKey,
-                                title: obj.Name,
-                                remove: true
-                            });
-                            that._oVM.addItem(oItem);
-                        })
-                        that.onSelect()
-                    },
-                    error: function (oError) {
-                        console.error(oError);
-                    }
+            fetchVariant: async function () {
+                that.variantData = await that.returnPromiseModel("VariantManagement");
+                const uniqueKeys = new Set(),
+                    filteredArray = that.variantData.filter(item => {
+                        if (!uniqueKeys.has(item.sKey)) {
+                            uniqueKeys.add(item.sKey);
+                            return true;
+                        }
+                        return false;
+                    });
+                filteredArray.forEach(obj => {
+                    const oItem = new VariantItem({
+                        key: obj.sKey,
+                        title: obj.Name,
+                        remove: true
+                    });
+                    that._oVM.addItem(oItem);
+                    if (obj.default)
+                        that._oVM.setDefaultKey(obj.sKey);
                 })
+                that.onSelect()
             },
             onSelect: function (event) {
                 let key, params, item;
@@ -69,19 +67,27 @@ sap.ui.define([
                 }
 
                 that.filterData = that.makeFiterData(item);
-                // // var sMessage = "Selected Key: " + params.key;
-                // const filters = that.varianStore.find(o => o.key === params.key).filter;
                 that.oFilterBar.getAllFilterItems().forEach((oFilterItem) => {
                     oFilterItem.getControl().setSelectedKeys();
                     oFilterItem.getControl().setSelectedKeys(that.filterData[oFilterItem.getControl().getName()]);
                 });
+                // that.oFilterBar.fireFilterChange();
             },
             onSave: function (event) {
+                that._oVM.setModified(false);
                 var params = event.getParameters();
                 if (params.overwrite) {
-                    var oItem = this._oVM.getItemByKey(params.key);
-                    that._oVM = this.getView().byId("vm");
-                    this._showMessagesMessage("View '" + oItem.getTitle() + "' updated.");
+                    var aData = this.oFilterBar.getAllFilterItems().reduce(function (aResult, oFilterItem) {
+                        aResult.push({
+                            groupName: oFilterItem.getGroupName(),
+                            fieldName: oFilterItem.getName(),
+                            fieldData: oFilterItem.getControl().getSelectedKeys()
+                        });
+
+                        return aResult;
+                    }, []);
+                    params.filters = aData;
+                    that.updateVariant(params);
                 } else {
                     var aData = this.oFilterBar.getAllFilterItems().reduce(function (aResult, oFilterItem) {
                         aResult.push({
@@ -101,26 +107,38 @@ sap.ui.define([
             onManage: function (event) {
                 var params = event.getParameters();
                 this._updateItems(params);
-                if(params.deleted)
-                that.deleteVariant(params.deleted);
-            if(params.def){
-                that.oModel.callFunction("/saveVariant", {
-                    method: "GET",
-                    urlParameters: { items: JSON.stringify(params.def), flag: "updateDefault" },
-                    success: function (oRes) {
-                        console.log(oRes)
-                    },
-                    error: function (error) {
-                        console.log(error)
-                    }
-                })
+                if (params.deleted)
+                    that.deleteVariant(params.deleted);
+                if (params.def) {
+                    that.oModel.callFunction("/saveVariant", {
+                        method: "GET",
+                        urlParameters: { items: JSON.stringify(params.def), flag: "updateDefault" },
+                        success: function (oRes) {
+                            console.log(oRes)
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    })
 
-            }
+                }
+                if (params.renamed) {
+                    that.oModel.callFunction("/saveVariant", {
+                        method: "GET",
+                        urlParameters: { items: JSON.stringify(params.renamed), flag: "rename" },
+                        success: function (oRes) {
+                            console.log(oRes)
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    })
+                }
             },
             _updateItems: function (mParams) {
                 if (mParams.deleted) {
                     mParams.deleted.forEach(function (sKey) {
-                        var oItem = this._oVM.getItemByKey(sKey);``
+                        var oItem = this._oVM.getItemByKey(sKey); ``
                         if (oItem) {
                             this._oVM.removeItem(oItem);
                             oItem.destroy();
@@ -146,6 +164,7 @@ sap.ui.define([
             },
             _createNewItem: function (mParams) {
                 var sKey = "key_" + Date.now();
+                that._oVM.setSelectedKey(sKey);
 
                 var oItem = new VariantItem({
                     key: sKey,
@@ -173,15 +192,11 @@ sap.ui.define([
                 }
                 if (mParams.def) {
                     that._oVM.setDefaultKey(sKey);
+                    // that._oVM.setDefaultKey(sKey);
                 }
 
                 that._oVM.addItem(oItem);
-
                 // this._showMessagesMessage("New view '" + oItem.getTitle() + "' created with key:'" + sKey + "'.");
-            },
-            onPress: function (event) {
-                debugger
-                this._oVM.setModified(!this._oVM.getModified());
             },
             saveVarOnDb: function (item) {
                 const variant = [];
@@ -222,8 +237,60 @@ sap.ui.define([
                 })
                 return res;
             },
-            onFilterChange:function(oEvent){
-                debugger
+            onFilterChange: function (oEvent) {
+                that._oVM.setModified(true);
+                // if()
+                that._oVM._createVariantList();
+                // debugger
+                // that._oVM.oVariantPopOver.getContent()[0].getFooter().addContent(that._oVM.oVariantSaveBtn);
+                that._oVM.oVariantPopOver.getContent()[0].getFooter().getContent()[1].setVisible(true);
+            },
+            updateVariant: function (param) {
+                const item = {
+                    sKey: param.key,
+                    filter: param.filters,
+                    Name: param.name,
+                    default: param.def
+                }
+                const variant = [];
+                item.filter.forEach(i => {
+                    i.fieldData.forEach(o => {
+                        variant.push({ sKey: item.sKey, Name: item.Name, default: item.default, FieldName: i.fieldName, Value: o })
+                    })
+                });
+                that.variantData = that.variantData.filter(o => o.sKey !== item.sKey);
+                that.variantData.push(...variant);
+                that.oModel.callFunction("/saveVariant", {
+                    method: "GET",
+                    urlParameters: { items: JSON.stringify(variant), flag: "updateVariant" },
+                    success: function (oRes) {
+                        console.log(oRes);
+                        that._oVM.oVariantPopOver.getContent()[0].getFooter().removeContent(that._oVM.oVariantSaveBtn);
+                        that._oVM.setModified(false);
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                })
+
+            },
+            onClear:function(oEvent){
+                that.oFilterBar.getAllFilterItems().forEach((oFilterItem) => {
+                    oFilterItem.getControl().setSelectedKeys();
+                });
+                that.oFilterBar.fireFilterChange()
+            },
+            returnPromiseModel: function (Entity) {
+                return new Promise((resolve, reject) => {
+                    that.oModel.read(`/${Entity}`, {
+                        success: function (oRes) {
+                            return resolve(oRes.results);
+                        },
+                        error: function (oError) {
+                            return reject(oError);
+                        }
+                    })
+                })
             }
         });
     });

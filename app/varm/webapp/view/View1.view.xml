@@ -7,8 +7,14 @@
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
-					<VariantManagement id="vm" select="onSelect" supportApplyAutomatically="false"  supportFavorites="false" save="onSave" manage="onManage" >
+					<VariantManagement id="vm" supportPublic="false"  modified="false" cancel="" select="onSelect" selectedKey="Standard" supportApplyAutomatically="false" supportFavorites="false" save="onSave" manage="onManage">
 						<items>
+						<VariantItem key="Standard" title="Standard"
+									visible="true"
+									executeOnSelect="false"
+									rename="false"
+									changeable="false"
+									remove="false" />
 						</items>
 					</VariantManagement>
 				</f:heading>
@@ -16,11 +22,11 @@
 		</f:title>
 		<f:header>
 			<f:DynamicPageHeader>
-				<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch"  filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
+				<fb:FilterBar id="filterbar" persistencyKey="myPersKey" clear="onClear" showClearOnFB="true" useToolbar="false" search=".onSearch"  filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
 					<fb:filterGroupItems>
 						<fb:FilterGroupItem name="Name" label="Name" groupName="Group1" visibleInFilterBar="true">
 							<fb:control>
-								<MultiComboBox name="Name" selectionChange=".onSelectionChange" items="{
+								<MultiComboBox name="Name" selectionChange=".onFilterChange" items="{
 												path: '/items',
 												templateShareable: true
 											}">
@@ -30,7 +36,7 @@
 						</fb:FilterGroupItem>
 						<fb:FilterGroupItem name="Category" label="Category" groupName="Group1" visibleInFilterBar="true">
 							<fb:control>
-								<MultiComboBox name="Category" selectionChange=".onSelectionChange" items="{
+								<MultiComboBox name="Category" selectionChange=".onFilterChange" items="{
 												path: '/items',
 												templateShareable: true
 											}">
